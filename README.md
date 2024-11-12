@@ -3,7 +3,7 @@
 ### 1. Clone the repository:
 
 ```bash
-git clone 'https://github.com/michalm08/raven_task_private.git'
+git clone 'https://github.com/michalm08/raven_task.git'
 ```
 
 ### 2. Client-side setup:
