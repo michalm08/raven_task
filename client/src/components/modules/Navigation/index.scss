@@ -1,0 +1,25 @@
+.navigation {
+  display: flex;
+  background-color: #fff;
+  box-shadow: 0 4px 10px #d3d3d3;
+  padding: 28px;
+  margin-bottom: 32px;
+
+  &__title {
+    margin-right: 32px;
+  }
+  &__element {
+    cursor: pointer;
+    margin-right: 16px;
+    a {
+      color: #7c7c7c;
+      text-decoration: none;
+      font-size: 18px;
+    }
+    &--active {
+      a {
+        color: #4160b4;
+      }
+    }
+  }
+}

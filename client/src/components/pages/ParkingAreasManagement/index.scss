@@ -1,0 +1,122 @@
+.parking-areas-management {
+  position: relative;
+  margin: 8px;
+
+  &__add-container {
+    width: 100vw;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    background-color: #5757573b;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .form {
+    background-color: #fff;
+    box-shadow: 0 0 20px #a0a0a0;
+    border-radius: 8px;
+    width: 320px;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    &__title {
+      font-size: 24px;
+      font-size: 20px;
+    }
+
+    &__input-container {
+      display: flex;
+
+      justify-content: space-between;
+      margin: 4px 0;
+      label {
+        width: 100px;
+        text-align: left;
+      }
+      input {
+        width: 170px;
+      }
+    }
+  }
+
+  &__confirm-delete-container {
+    width: 100vw;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    background-color: #5757573b;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__confirm-delete {
+    background-color: #fff;
+    box-shadow: 0 0 20px #a0a0a0;
+    border-radius: 8px;
+    width: 320px;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+
+    .confirm-delete__text {
+      font-size: 24px;
+    }
+    padding: 16px;
+    .confirm-delete__buttons {
+      display: flex;
+      gap: 8px;
+      &--delete {
+        background-color: #e63946;
+      }
+      &--cancel {
+        background-color: #2a9d8f;
+      }
+    }
+  }
+
+  &__add-button {
+    margin: 8px;
+  }
+  &__areas {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 8px;
+    .areas__tile {
+      box-shadow: 0 4px 10px #d3d3d3;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 8px 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .areas__tile-actions {
+      display: flex;
+      .areas__tile-icon {
+        cursor: pointer;
+        padding: 4px;
+        width: 24px;
+        height: 24px;
+      }
+    }
+    .areas__tile-text-container {
+      display: flex;
+      p {
+        width: 160px;
+        margin-right: 4px;
+      }
+      span {
+        font-weight: 500;
+      }
+    }
+  }
+}

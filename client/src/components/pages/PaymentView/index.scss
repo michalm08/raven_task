@@ -1,0 +1,43 @@
+.payment-view {
+  margin: 8px;
+  box-shadow: 0px 0px 3px #6f6f6f;
+  padding: 25px;
+  max-width: 350px;
+
+  height: 240px;
+  &__output-data {
+    border-top: 2px dotted #6f6f6f;
+    margin-top: 8px;
+    padding-top: 8px;
+  }
+  &__input-container,
+  &__select-container {
+    display: flex;
+    margin: 8px 0;
+    label {
+      width: 160px;
+    }
+  }
+  &__input-container {
+    input {
+      width: 140px;
+    }
+  }
+  &__select-container {
+    select {
+      width: 145px;
+    }
+  }
+  &__output-data {
+    .payment-view__currency-management {
+      display: flex;
+      gap: 8px;
+      .payment-view__currency{
+        cursor: pointer;
+      }
+      .active {
+        font-weight: 500;
+      }
+    }
+  }
+}
