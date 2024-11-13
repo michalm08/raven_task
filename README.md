@@ -16,6 +16,7 @@ npm start
 ### 3. Server-side setup:
 Navigate to the server directory and run:
 ```bash
+npm install
 npm start
 ```
 This will start the server with nodemon enabled, so any changes made will automatically refresh the server.
