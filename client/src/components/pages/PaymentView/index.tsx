@@ -13,29 +13,30 @@ export enum Currency {
   EUR = 'EUR',
   PLN = 'PLN',
 }
-interface CurrenciesValue {
+interface CurrenciesRate {
   EUR: number;
   PLN: number;
   USD: number;
 }
 
 const PaymentView = () => {
-  const [currenciesValue, setCurrenciesValue] = useState<CurrenciesValue>({
+  const [currenciesRate, setCurrenciesRate] = useState<CurrenciesRate>({
     EUR: 0,
     PLN: 0,
     USD: 0,
   });
+
   const [activeCurrency, setActiveCurrency] = useState<Currency>(Currency.USD);
   const [areas, setAreas] = useState<ParkingArea[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormData>({
-    selectedArea: 'areas/35-A',
-    startTime: '21:01',
-    endTime: '23:01',
-    parkingDate: '2024-10-29',
+    selectedArea: '',
+    startTime: '',
+    endTime: '',
+    parkingDate: '',
   });
   const [parkingFee, setParkingFee] = useState<ParkingFee>();
-  const [isCurrencyRatesLoaded, setIsCurrencyRatesLoaded] = useState(false);
+  const [currencyRatesLoaded, setCurrencyRatesLoaded] = useState<boolean>(false);
 
   const isFormValid =
     formData.selectedArea &&
@@ -43,14 +44,9 @@ const PaymentView = () => {
     formData.endTime &&
     formData.parkingDate;
 
-  const currencySymbols = {
-    [Currency.USD]: '$',
-    [Currency.EUR]: '€',
-    [Currency.PLN]: 'zł',
-  };
-
   useEffect(() => {
     loadAreas();
+    getCurrencyRates();
   }, []);
 
   const loadAreas = () => {
@@ -64,7 +60,21 @@ const PaymentView = () => {
         setIsLoading(false);
         alert('Failed to load area. '+ err.response.data.name);
       });
-  };
+    };
+
+    const getCurrencyRates = () => {
+      setIsLoading(true);
+      getExchangeRate()
+      .then((res) => {
+        setCurrenciesRate(res.data.rates)
+        setIsLoading(false);
+        setCurrencyRatesLoaded(true);
+      })
+      .catch(() => {
+        alert('Failed to load currencies');
+          setIsLoading(false);
+      })
+    }
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -76,15 +86,8 @@ const PaymentView = () => {
     }));
   };
 
-  const setBasicCurrency = () => {
-    setCurrenciesValue({ EUR: 0, PLN: 0, USD: 0 });
-    setActiveCurrency(Currency.USD);
-    setIsCurrencyRatesLoaded(false);
-  };
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setBasicCurrency();
 
     setIsLoading(true);
     calculateParkingFee({ ...formData, areas })
@@ -103,36 +106,6 @@ const PaymentView = () => {
     const remainingMinutes = minutes % 60;
 
     return `${hours}h ${remainingMinutes}min`;
-  };
-
-  const changeCurrency = (e: React.MouseEvent<HTMLParagraphElement>) => {
-    const selectedCurrency = e.currentTarget.textContent as Currency;
-    setActiveCurrency(selectedCurrency);
-
-    if (!isCurrencyRatesLoaded) {
-      setIsLoading(true);
-      getExchangeRate()
-        .then((res) => {
-          setIsCurrencyRatesLoaded(true);
-          const latestCurrencyRates = res.data.rates;
-
-          if (!parkingFee) return;
-          const priceInUSD = Number(parkingFee.totalPrice);
-          const priceInEUR = priceInUSD / latestCurrencyRates.USD;
-          const priceInPLN = priceInEUR * latestCurrencyRates.PLN;
-
-          setCurrenciesValue({
-            EUR: priceInEUR,
-            USD: priceInUSD,
-            PLN: priceInPLN,
-          });
-          setIsLoading(false);
-        })
-        .catch(() => {
-          alert('Failed to load currencies');
-          setIsLoading(false);
-        });
-    }
   };
 
   return (
@@ -194,28 +167,32 @@ const PaymentView = () => {
       {parkingFee && (
         <div className="payment-view__output-data">
           <p>Parking time: {formatMinutes(parkingFee.totalTime)}</p>
-          <p>
-            Parking fee:{' '}
-            {currenciesValue[activeCurrency]
-              ? currenciesValue[activeCurrency].toFixed(2)
-              : parkingFee.totalPrice}
-            {currenciesValue[activeCurrency]
-              ? currencySymbols[activeCurrency]
-              : currencySymbols.EUR}
-          </p>
-          <div className="payment-view__currency-management">
-            {Object.values(Currency).map((currency) => (
-              <p
-                key={currency}
-                className={`payment-view__currency ${
-                  activeCurrency === currency ? 'active' : ''
-                }`}
-                onClick={changeCurrency}
-              >
-                {currency}
-              </p>
-            ))}
-          </div>
+          {activeCurrency==='USD'&&<p>Parking fee: {parkingFee.totalPrice}$</p>}
+          {currencyRatesLoaded && (
+            <>
+              {activeCurrency===Currency.EUR && <p>Parking fee: {(parkingFee.totalPrice / currenciesRate.USD).toFixed(2)}€</p>}
+              {activeCurrency===Currency.PLN && <p>Parking fee: {(parkingFee.totalPrice / currenciesRate.USD*currenciesRate.PLN).toFixed(2)}Zł</p>}
+            </>
+          )}
+          {currencyRatesLoaded && (
+            <div className="payment-view__currency-management">
+              {Object.keys(Currency).map((key) => (
+                  <p
+                    key={key}
+                    onClick={() =>
+                      setActiveCurrency(Currency[key as keyof typeof Currency])
+                    }
+                    className={`payment-view__currency ${
+                      activeCurrency === Currency[key as keyof typeof Currency]
+                        ? 'active'
+                        : ''
+                    }`}
+                  >
+                    {Currency[key as keyof typeof Currency]}
+                  </p>
+                ))}
+              </div>
+          )}
         </div>
       )}
     </div>
