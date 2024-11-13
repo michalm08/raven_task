@@ -31,3 +31,6 @@ If the database is deleted, you will receive the following alert:
 'Failed to load area. DatabaseDoesNotExistException'
 
 In this case, you will need to manually add a database named `parkingTask` to continue using the project.
+
+## .env
+The currency API key (in the .env file) has been intentionally added to GitHub for your testing purposes.
